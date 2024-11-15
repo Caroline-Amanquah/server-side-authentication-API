@@ -108,47 +108,42 @@ class UserController {
 
   static async logoutUser(request, h) {
     try {
-      const sessionId = request.state['auth-cookie']?.id;
-
-      if (!sessionId) {
-        throw Boom.unauthorized("No active session found");
-      }
-
-      const session = await Session.findOne({ sessionId, isActive: true });
-
-      if (!session) {
-        throw Boom.unauthorized("Session not found or already inactive");
-      }
-
-      // Find and update the session to inactive
-      const updatedSession = await Session.findOneAndUpdate(
-        { sessionId, isActive: true },
-        { isActive: false },
-        { new: true }
-      );
-
-      if (!updatedSession) {
-        throw Boom.unauthorized("Session not found or already inactive");
-      }
-
-      await Session.findOneAndUpdate({ sessionId }, { isActive: false });
-      h.unstate('auth-cookie');
-
-      console.log(`User logged out at: ${new Date().toISOString()}`);
-      console.log("Updated Session info:", {
-        _id: updatedSession._id,
-        userId: updatedSession.userId,
-        sessionId: updatedSession.sessionId,
-        createdAt: updatedSession.createdAt,
-        isActive: updatedSession.isActive, 
-      });
-
-      return h.response({ message: "User logged out successfully" }).code(200);
+       const sessionId = request.state['auth-cookie']?.id;
+       console.log("Attempting logout with session ID:", sessionId); // Log session ID for debugging
+ 
+       if (!sessionId) {
+          console.log("No session ID found in auth-cookie");
+          throw Boom.unauthorized("No active session found");
+       }
+ 
+       const session = await Session.findOneAndUpdate(
+          { sessionId, isActive: true },
+          { isActive: false },
+          { new: true }
+       );
+ 
+       if (!session) {
+          console.log("Session not found or already inactive");
+          throw Boom.unauthorized("Session not found or already inactive");
+       }
+ 
+       // Clear the cookie
+       h.unstate('auth-cookie');
+       console.log(`User logged out at: ${new Date().toISOString()}`);
+       console.log("Updated Session info:", {
+          _id: session._id,
+          userId: session.userId,
+          sessionId: session.sessionId,
+          createdAt: session.createdAt,
+          isActive: session.isActive, 
+       });
+ 
+       return h.response({ message: "User logged out successfully" }).code(200);
     } catch (error) {
-      console.error("Error during logout:", error);
-      return Boom.badImplementation("Internal server error");
+       console.error("Error during logout:", error);
+       return Boom.badImplementation("Internal server error");
     }
-  }
+ } 
 }
 
 module.exports = UserController;
