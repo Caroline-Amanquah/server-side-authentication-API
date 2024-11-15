@@ -1,0 +1,34 @@
+.govuk-header__service-name {
+    position: relative;
+    font-size: 30px; /* Adjust font size */
+}
+
+.govuk-header__link--homepage {
+    display: inline-block; /* Ensures that the hover underline aligns with the logo */
+    position: absolute;
+    transform: translateX(-400px); /* Moves both the logo and hover underline to the left */
+    text-decoration: underline; /* Keeps the underline directly below */
+    margin-top: 10px;
+    
+}
+
+.govuk-button--inverse {
+    position: absolute;
+    right: 10px; /* Aligns the button horizontally to the right */
+    transform: translateY(0); /* Adjust if you need to tweak vertical alignment */
+    margin-top: -50px; /* Optional: adjust as needed for exact alignment with the logo */
+    padding: 10px 20px; /* Adjust padding if needed */
+    z-index: 1000;
+}
+
+/* Ensure button remains visible on click */
+.govuk-button--inverse:focus,
+.govuk-button--inverse:active {
+    outline: none; /* Remove any focus outline that may hide it */
+    opacity: 10; /* Ensure it doesn’t become transparent */
+    background-color: initial; /* Keeps original background color */
+}
+
+
+
+

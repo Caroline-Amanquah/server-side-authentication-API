@@ -1,5 +1,4 @@
-// backend/models/userModel.js
-
+// models/userModel.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
@@ -12,14 +11,14 @@ const UserSchema = new mongoose.Schema({
 
 // Pre-save hook to hash password before saving
 UserSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next(); // Only hash if the password is new or changed
+  if (!this.isModified('password')) return next();
 
   try {
-    const salt = await bcrypt.genSalt(10); // Generate a salt with 10 rounds
-    this.password = await bcrypt.hash(this.password, salt); // Hash the password with the salt
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
-    return next(error); // Pass error to middleware if hashing fails
+    return next(error);
   }
 });
 
@@ -28,6 +27,7 @@ UserSchema.methods.validatePassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-const User = mongoose.model('User', UserSchema);
+// Explicitly specify the collection name as 'authusers'
+const User = mongoose.model('User', UserSchema, 'authusers');
 
 module.exports = User;
