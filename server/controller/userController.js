@@ -35,6 +35,15 @@ class UserController {
       const newUser = new User({ name, email, password, referenceNumber });
       await newUser.save();
 
+
+      // Log user creation info
+      console.log(`Account created at: ${new Date().toISOString()}`);
+      console.log(`name: "${newUser.name}"`);
+      console.log(`email: "${newUser.email}"`);
+      console.log(`password: "${newUser.password}"`);
+      console.log(`referenceNumber: "${newUser.referenceNumber}"`);
+
+
       // Generate session ID and save session
       const sessionId = uuidv4();
       const session = new Session({
@@ -44,6 +53,16 @@ class UserController {
         createdAt: new Date(),
       });
       await session.save();
+
+      // Log session creation info
+      console.log(`Session created at: ${new Date().toISOString()}`);
+      console.log("Session info:", {
+        _id: session._id,
+        userId: session.userId,
+        sessionId: session.sessionId,
+        createdAt: session.createdAt,
+        isActive: session.isActive,
+      });
 
       // Set session cookie securely
       h.state('auth-cookie', { id: sessionId }, { 
@@ -83,6 +102,50 @@ class UserController {
       return h.response(users).code(200);
     } catch (error) {
       console.error("Error fetching users with sessions:", error);
+      return Boom.badImplementation("Internal server error");
+    }
+  }
+
+  static async logoutUser(request, h) {
+    try {
+      const sessionId = request.state['auth-cookie']?.id;
+
+      if (!sessionId) {
+        throw Boom.unauthorized("No active session found");
+      }
+
+      const session = await Session.findOne({ sessionId, isActive: true });
+
+      if (!session) {
+        throw Boom.unauthorized("Session not found or already inactive");
+      }
+
+      // Find and update the session to inactive
+      const updatedSession = await Session.findOneAndUpdate(
+        { sessionId, isActive: true },
+        { isActive: false },
+        { new: true }
+      );
+
+      if (!updatedSession) {
+        throw Boom.unauthorized("Session not found or already inactive");
+      }
+
+      await Session.findOneAndUpdate({ sessionId }, { isActive: false });
+      h.unstate('auth-cookie');
+
+      console.log(`User logged out at: ${new Date().toISOString()}`);
+      console.log("Updated Session info:", {
+        _id: updatedSession._id,
+        userId: updatedSession.userId,
+        sessionId: updatedSession.sessionId,
+        createdAt: updatedSession.createdAt,
+        isActive: updatedSession.isActive, 
+      });
+
+      return h.response({ message: "User logged out successfully" }).code(200);
+    } catch (error) {
+      console.error("Error during logout:", error);
       return Boom.badImplementation("Internal server error");
     }
   }

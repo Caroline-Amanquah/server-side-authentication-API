@@ -1,6 +1,4 @@
-// backend/routes/userRoutes.js
-
-// backend/routes/userRoutes.js
+// server/routes/userRoutes.js
 
 const UserController = require('../controller/userController');
 const Joi = require('joi');
@@ -52,6 +50,17 @@ const userRoutes = [
       auth: false,
     },
   },
+  {
+    method: 'POST',
+    path: '/api/logout',
+    handler: UserController.logoutUser,
+    options: { auth: 'session' },
+  },
+  // {
+  //   method: 'POST',
+  //   path: '/login',
+  //   handler: UserController.loginUser,
+  // }
 ];
 
 module.exports = userRoutes;
