@@ -1,4 +1,4 @@
-<!--frontend/dist/login.html-->
+<!--client/dist/login.html-->
 
 
 <!DOCTYPE html>
@@ -15,7 +15,6 @@
     <link rel="manifest" href="/assets/manifest.json">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="./index.css">
-    <script src="./index.js"></script>
 </head>
 
 <body class="govuk-template__body">
@@ -66,23 +65,8 @@
                         Show
                     </button>
                 </div>
-            </div>
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const toggleButton = document.querySelector('.govuk-js-password-input-toggle');
-                    const passwordInput = document.querySelector('.govuk-js-password-input-input');
-                    
-                    if (toggleButton && passwordInput) {
-                        toggleButton.addEventListener('click', function () {
-                            const isPassword = passwordInput.type === 'password';
-                            passwordInput.type = isPassword ? 'text' : 'password';
-                            toggleButton.textContent = isPassword ? 'Hide' : 'Show';
-                            toggleButton.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
-                        });
-                    }
-                });
-            </script>
             <div class="govuk-button-group">
+                <div id="feedback" style="display: none;" class="govuk-notification-banner"></div>
                 <button type="submit" class="govuk-button" data-module="govuk-button">
                     Log In
                 </button>
@@ -269,5 +253,6 @@
         import { initAll } from '/javascripts/govuk-frontend.min.js'
         initAll()
     </script>
+    <script src="./index.js"></script>
 </body>
 </html>

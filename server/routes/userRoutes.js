@@ -47,7 +47,7 @@ const userRoutes = [
     path: '/api/users',
     handler: UserController.getAllUsers,
     options: {
-      auth: false,
+      auth: 'session',
     },
   },
   {
@@ -56,11 +56,33 @@ const userRoutes = [
     handler: UserController.logoutUser,
     options: { auth: 'session' },
   },
-  // {
-  //   method: 'POST',
-  //   path: '/login',
-  //   handler: UserController.loginUser,
-  // }
+  {
+    method: 'POST',
+    path: '/api/login',
+    handler: UserController.loginUser,
+    options: {
+      auth: false,
+      validate: {
+        payload: Joi.object({
+          email: Joi.string()
+            .email({ tlds: { allow: false } })
+            .required()
+            .messages({
+              'string.email': 'Invalid email format',
+              'any.required': 'Email is required',
+            }),
+          password: Joi.string().required().messages({
+            'any.required': 'Password is required',
+          }),
+        }),
+        failAction: (request, h, err) => {
+          const validationError = err;
+          const customMessage = validationError?.details?.[0]?.message || "Invalid request payload input";
+          throw Boom.badRequest(customMessage);
+        },
+      },
+    },
+  }  
 ];
 
 module.exports = userRoutes;
