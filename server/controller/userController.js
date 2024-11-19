@@ -1,4 +1,4 @@
-// backend/controllers/UserController.js
+// server/controllers/UserController.js
 
 const  User  = require('../models/userModel');
 const  Session  = require('../models/sessionModel');
@@ -83,28 +83,54 @@ class UserController {
   }
 
   static async getAllUsers(request, h) {
-    try {
-      const users = await User.aggregate([
-        {
-          $lookup: {
-            from: 'sessions',
-            localField: '_id',
-            foreignField: 'userId',
-            as: 'sessions',
-          },
-        },
-      ]);
+  //   try {
+  //     const users = await User.aggregate([
+  //       {
+  //         $lookup: {
+  //           from: 'sessions',
+  //           localField: '_id',
+  //           foreignField: 'userId',
+  //           as: 'sessions',
+  //         },
+  //       },
+  //     ]);
 
-      if (!users || users.length === 0) {
-        return h.response({ message: "No users found." }).code(404);
-      }
+  //     if (!users || users.length === 0) {
+  //       return h.response({ message: "No users found." }).code(404);
+  //     }
 
-      return h.response(users).code(200);
-    } catch (error) {
-      console.error("Error fetching users with sessions:", error);
-      return Boom.badImplementation("Internal server error");
+  //     return h.response(users).code(200);
+  //   } catch (error) {
+  //     console.error("Error fetching users with sessions:", error);
+  //     return Boom.badImplementation("Internal server error");
+  //   }
+  // }
+  try {
+    const sessionId = request.state['auth-cookie']?.id;
+    console.log("Session ID from auth-cookie:", sessionId);
+    if (!sessionId) {
+      throw Boom.unauthorized("No active session found");
     }
+
+    const session = await Session.findOne({ sessionId, isActive: true }).populate('userId');
+    if (!session) {
+      throw Boom.unauthorized("Session not found or inactive");
+    }
+
+    const user = session.userId;
+    if (!user) {
+      throw Boom.notFound("User not found");
+    }
+
+    return h.response({
+      name: user.name,
+      referenceNumber: user.referenceNumber,
+    }).code(200);
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    return Boom.badImplementation("Internal server error");
   }
+}
 
   static async logoutUser(request, h) {
     try {
@@ -143,7 +169,62 @@ class UserController {
        console.error("Error during logout:", error);
        return Boom.badImplementation("Internal server error");
     }
- } 
+  }
+  
+  static async loginUser(request, h) {
+    const { email, password } = request.payload;
+  
+    try {
+      // Find the user by email
+      const user = await User.findOne({ email });
+      if (!user) {
+        throw Boom.unauthorized("Invalid email or password");
+      }
+  
+      // Validate the password
+      const isValidPassword = await user.validatePassword(password);
+      if (!isValidPassword) {
+        throw Boom.unauthorized("Invalid email or password");
+      }
+  
+      // Generate a new session
+      const sessionId = uuidv4();
+      const session = new Session({
+        userId: user._id,
+        sessionId,
+        isActive: true,
+        createdAt: new Date(),
+      });
+      await session.save();
+
+      // Log the login information
+    console.log(`User logged in at: ${new Date().toISOString()}`);
+    console.log("Session info:", {
+      _id: session._id,
+      userId: session.userId,
+      sessionId: session.sessionId,
+      createdAt: session.createdAt,
+      isActive: session.isActive,
+    });
+  
+      // Set session cookie securely
+      h.state("auth-cookie", { id: sessionId }, {
+        isSecure: true, // Set to true in production
+        path: "/",
+        isHttpOnly: true,
+        isSameSite: "Lax",
+      });
+  
+      return h.response({
+        message: "Login successful",
+        user: { name: user.name, referenceNumber: user.referenceNumber },
+      }).code(200);
+    } catch (error) {
+      console.error("Error during login:", error);
+      return Boom.badImplementation("Internal server error");
+    }
+  }
+  
 }
 
 module.exports = UserController;
