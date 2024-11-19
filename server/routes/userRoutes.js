@@ -51,7 +51,7 @@ const userRoutes = [
     },
   },
   {
-    method: 'POST',
+    method: 'DELETE',
     path: '/api/logout',
     handler: UserController.logoutUser,
     options: { auth: 'session' },
