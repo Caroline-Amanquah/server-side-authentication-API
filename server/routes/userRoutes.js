@@ -47,7 +47,7 @@ const userRoutes = [
     path: '/api/users',
     handler: UserController.getAllUsers,
     options: {
-      auth: 'session',
+      auth: false,
     },
   },
   {

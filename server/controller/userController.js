@@ -17,17 +17,18 @@ class UserController {
     const { name, email, password } = request.payload;
 
     try {
-      // Validate email format
-      if (!validator.isEmail(email)) {
-        throw Boom.badRequest('Invalid email format');
-      }
+      // // Validate email format
+      // if (!validator.isEmail(email)) {
+      //   throw Boom.badRequest('Invalid email format');
+      // }
 
       // Check if the user already exists
       const existingUser = await User.findOne({ email });
       if (existingUser) {
         throw Boom.conflict('User already exists');
       }
-
+      
+      
       // Generate a unique reference number
       const referenceNumber = generateReferenceNumber();
 
@@ -83,54 +84,29 @@ class UserController {
   }
 
   static async getAllUsers(request, h) {
-  //   try {
-  //     const users = await User.aggregate([
-  //       {
-  //         $lookup: {
-  //           from: 'sessions',
-  //           localField: '_id',
-  //           foreignField: 'userId',
-  //           as: 'sessions',
-  //         },
-  //       },
-  //     ]);
+    try {
+      const users = await User.aggregate([
+        {
+          $lookup: {
+            from: 'sessions',
+            localField: '_id',
+            foreignField: 'userId',
+            as: 'sessions',
+          },
+        },
+      ]);
 
-  //     if (!users || users.length === 0) {
-  //       return h.response({ message: "No users found." }).code(404);
-  //     }
+      if (!users || users.length === 0) {
+        return h.response({ message: "No users found." }).code(404);
+      }
 
-  //     return h.response(users).code(200);
-  //   } catch (error) {
-  //     console.error("Error fetching users with sessions:", error);
-  //     return Boom.badImplementation("Internal server error");
-  //   }
-  // }
-  try {
-    const sessionId = request.state['auth-cookie']?.id;
-    console.log("Session ID from auth-cookie:", sessionId);
-    if (!sessionId) {
-      throw Boom.unauthorized("No active session found");
+      return h.response(users).code(200);
+    } catch (error) {
+      console.error("Error fetching users with sessions:", error);
+      return Boom.badImplementation("Internal server error");
     }
-
-    const session = await Session.findOne({ sessionId, isActive: true }).populate('userId');
-    if (!session) {
-      throw Boom.unauthorized("Session not found or inactive");
-    }
-
-    const user = session.userId;
-    if (!user) {
-      throw Boom.notFound("User not found");
-    }
-
-    return h.response({
-      name: user.name,
-      referenceNumber: user.referenceNumber,
-    }).code(200);
-  } catch (error) {
-    console.error("Error fetching user details:", error);
-    return Boom.badImplementation("Internal server error");
   }
-}
+  
 
   static async logoutUser(request, h) {
     try {
@@ -170,6 +146,7 @@ class UserController {
        return Boom.badImplementation("Internal server error");
     }
   }
+
   
   static async loginUser(request, h) {
     const { email, password } = request.payload;
@@ -209,11 +186,11 @@ class UserController {
   
       // Set session cookie securely
       h.state("auth-cookie", { id: sessionId }, {
-        isSecure: true, // Set to true in production
+        isSecure: true, 
         path: "/",
         isHttpOnly: true,
         isSameSite: "Lax",
-      });
+    });
   
       return h.response({
         message: "Login successful",
@@ -224,7 +201,6 @@ class UserController {
       return Boom.badImplementation("Internal server error");
     }
   }
-  
 }
 
 module.exports = UserController;
