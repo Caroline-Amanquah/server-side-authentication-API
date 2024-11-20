@@ -1,4 +1,4 @@
-//client/dist/index.js
+//pages/index.js
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("form");
     const feedback = document.getElementById("feedback");

@@ -1,16 +1,26 @@
-// server/controllers/UserController.js
+// controllers/UserController.js
 
 const  User  = require('../models/userModel');
 const  Session  = require('../models/sessionModel');
 const { v4: uuidv4 } = require('uuid');
 const Boom = require('@hapi/boom');
-const validator = require('validator');
 
-// Helper function to generate a unique reference number
-function generateReferenceNumber() {
+// Function generates a unique reference number
+const generateReferenceNumber = () => {
   const randomMiddle = Math.floor(1000 + Math.random() * 9000); // Random 4-digit number
   return `HD${randomMiddle}F`;
 }
+
+// Function formats the timestamp using JavaScript Intl.DateTimeFormat API
+const formatDate = (date) => {
+  return new Intl.DateTimeFormat('en-GB', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  }).format(date);
+};
+
+console.log(`User logged out at: ${formatDate(new Date())}`);
+
 
 class UserController {
   static async registerUser(request, h) {
@@ -34,7 +44,7 @@ class UserController {
 
 
       // Log user creation info
-      console.log(`Account created at: ${new Date().toISOString()}`);
+      console.log(`Account created at: ${formatDate(new Date())}`);
       console.log(`name: "${newUser.name}"`);
       console.log(`email: "${newUser.email}"`);
       console.log(`password: "${newUser.password}"`);
@@ -52,7 +62,7 @@ class UserController {
       await session.save();
 
       // Log session creation info
-      console.log(`Session created at: ${new Date().toISOString()}`);
+      console.log(`Session created at: ${formatDate(new Date())}`);
       console.log("Session info:", {
         _id: session._id,
         userId: session.userId,
@@ -127,7 +137,7 @@ class UserController {
  
        // Clear the cookie
        h.unstate('auth-cookie');
-       console.log(`User logged out at: ${new Date().toISOString()}`);
+       console.log(`User logged out at: ${formatDate(new Date())}`);
        console.log("Updated Session info:", {
           _id: session._id,
           userId: session.userId,
@@ -170,8 +180,16 @@ class UserController {
       });
       await session.save();
 
+       
+
       // Log the login information
-    console.log(`User logged in at: ${new Date().toISOString()}`);
+    console.log(`User logged in at: ${formatDate(new Date())}`);
+    // Log the user information
+    console.log("User info:");
+    console.log(`name: "${user.name}"`);
+    console.log(`email: "${user.email}"`);
+    console.log(`referenceNumber: "${user.referenceNumber}"`);
+
     console.log("Session info:", {
       _id: session._id,
       userId: session.userId,

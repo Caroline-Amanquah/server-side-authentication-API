@@ -1,4 +1,4 @@
-// server/server.js
+// server.js
 
 const Hapi = require('@hapi/hapi');
 const Cookie = require('@hapi/cookie');

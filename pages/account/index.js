@@ -1,4 +1,4 @@
-//client/dist/account/index.js
+//pages/account/index.js
 document.addEventListener("DOMContentLoaded", async function () {
   try {
     // Fetch user data from the backend

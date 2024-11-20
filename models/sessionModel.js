@@ -1,4 +1,4 @@
-// backend/models/sessionModel.js
+// models/sessionModel.js
 
 const mongoose = require('mongoose');
 
