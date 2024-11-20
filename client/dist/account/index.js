@@ -1,8 +1,10 @@
+//client/dist/account/index.js
 document.addEventListener("DOMContentLoaded", async function () {
   try {
-    const response = await fetch("http://localhost:3000/api/user", {
+    // Fetch user data from the backend
+    const response = await fetch("http://localhost:3000/api/users/user", {
       method: "GET",
-      credentials: "include",
+      credentials: "include", // Include the auth-cookie
       headers: {
         "Content-Type": "application/json",
       },
@@ -13,29 +15,24 @@ document.addEventListener("DOMContentLoaded", async function () {
       const data = await response.json();
       console.log("Data received from backend:", data);
 
-
-      if (user) {
-        const userNameElement = document.getElementById("user-name");
-        const referenceNumberElement = document.getElementById("reference-number");
-
-        if (userNameElement && user.name) {
-          userNameElement.textContent = user.name;
-          localStorage.setItem("userName", user.name);
-        }
-
-        if (referenceNumberElement && user.referenceNumber) {
-          referenceNumberElement.textContent = user.referenceNumber;
-          localStorage.setItem("referenceNumber", user.referenceNumber);
-        }
+      // Update DOM with user data
+      if (data.name && data.referenceNumber) {
+        document.getElementById("user-name").textContent = data.name;
+        document.getElementById("reference-number").textContent = data.referenceNumber;
       } else {
-        throw new Error("User data not found in the response.");
+        throw new Error("User data is missing in the response.");
       }
     } else {
-      throw new Error("Failed to fetch user account data from the backend.");
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to fetch user data.");
     }
   } catch (error) {
     console.error("Error loading account data from backend:", error);
+
+    // Redirect to login page if user is not authenticated
+    window.location.href = "/";
   }
+});
 
   const userName = localStorage.getItem("userName");
   const referenceNumber = localStorage.getItem("referenceNumber");
@@ -79,4 +76,3 @@ document.addEventListener("DOMContentLoaded", async function () {
   } else {
     console.error("Logout button not found in the DOM.");
   }
-});
