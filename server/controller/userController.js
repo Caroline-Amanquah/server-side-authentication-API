@@ -17,10 +17,6 @@ class UserController {
     const { name, email, password } = request.payload;
 
     try {
-      // // Validate email format
-      // if (!validator.isEmail(email)) {
-      //   throw Boom.badRequest('Invalid email format');
-      // }
 
       // Check if the user already exists
       const existingUser = await User.findOne({ email });
@@ -194,13 +190,43 @@ class UserController {
   
       return h.response({
         message: "Login successful",
-        user: { name: user.name, referenceNumber: user.referenceNumber },
+        user: { 
+        name: user.name, 
+        referenceNumber: user.referenceNumber, 
+      },
       }).code(200);
     } catch (error) {
       console.error("Error during login:", error);
       return Boom.badImplementation("Internal server error");
     }
   }
+  static async getCurrentUser(request, h) {
+    try {
+      const sessionId = request.state["auth-cookie"]?.id;
+  
+      if (!sessionId) {
+        throw Boom.unauthorized("No active session found");
+      }
+  
+      const session = await Session.findOne({ sessionId, isActive: true });
+      if (!session) {
+        throw Boom.unauthorized("Session not found or inactive");
+      }
+  
+      const user = await User.findById(session.userId);
+      if (!user) {
+        throw Boom.unauthorized("User not found");
+      }
+  
+      return h.response({
+        name: user.name,
+        referenceNumber: user.referenceNumber,
+      }).code(200);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      return Boom.badImplementation("Internal server error");
+    }
+  }  
 }
 
 module.exports = UserController;

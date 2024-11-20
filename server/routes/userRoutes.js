@@ -82,7 +82,15 @@ const userRoutes = [
         },
       },
     },
-  }  
+  },
+{
+  method: 'GET',
+  path: '/api/users/user',
+  handler: UserController.getCurrentUser, // Delegate logic to the controller
+  options: {
+    auth: false, // No need for additional Hapi auth;  auth-cookie validation is relied on
+  },
+}
 ];
 
 module.exports = userRoutes;
