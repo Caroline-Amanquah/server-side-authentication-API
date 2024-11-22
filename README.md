@@ -52,7 +52,7 @@ npm install --force
 node server.js
 ```
 
-Alternatively, you can use the npm script (if defined in package.json):
+Alternatively, you can use the npm script (defined in package.json):
 
 ```bash
 npm run start
