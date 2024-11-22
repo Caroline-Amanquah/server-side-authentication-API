@@ -1,6 +1,5 @@
 # Node modules and build files
 node_modules/
-dist/
 
 # Environment variables
 .env

@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema({
   referenceNumber: { type: String, required: true, unique: true },
 });
 
-// Pre-save hook to hash password before saving
+// hashes password before saving
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
 
@@ -27,7 +27,7 @@ UserSchema.methods.validatePassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-// Explicitly specify the collection name as 'authusers'
+// Explicitly specifies the collection name as 'authusers'
 const User = mongoose.model('User', UserSchema, 'authusers');
 
 module.exports = User;

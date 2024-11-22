@@ -5,10 +5,10 @@ const sourcemaps = require('gulp-sourcemaps');
 
 gulp.task('sass', function () {
  return gulp.src('scss/main.scss')
-   .pipe(sourcemaps.init()) // Initialize sourcemaps before compilation starts
+   .pipe(sourcemaps.init()) 
    .pipe(sass().on('error', sass.logError))
-   .pipe(sourcemaps.write('.')) // Write sourcemaps to the same directory as the CSS files
-   .pipe(gulp.dest('./pages/css')); // Ensure CSS files are outputted here
+   .pipe(sourcemaps.write('.')) 
+   .pipe(gulp.dest('./pages/css')); 
 });
 
 

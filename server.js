@@ -79,13 +79,8 @@ const init = async () => {
       auth: false, // Disable authentication for static files
     },
   });
-
-  console.log('Available auth strategies:', server.auth.strategy);
-  console.log('Session strategy registered successfully.');
+  
   console.log("Static routes registered successfully.");
-  console.log("Dist Path:", Path.join(__dirname, "dist"));
-  console.log("Public Path:", Path.join(__dirname, "public"));
-  console.log("Assets Path:", Path.join(__dirname, "public", "assets"));
 
   // Register other user-defined API routes
   server.route(userRoutes);
