@@ -1,0 +1,21 @@
+.govuk-header__service-name {
+    font-size: 30px; 
+}
+
+.govuk-button.govuk-button--start {
+    position: absolute; 
+    top: 5px; 
+    right: 10px; 
+    z-index: 100; 
+}
+
+.govuk-footer {
+    margin-top: 160px; 
+}
+
+.govuk-panel {
+    margin-top: 90px; 
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}

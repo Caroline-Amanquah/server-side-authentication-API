@@ -1,0 +1,42 @@
+
+html, body {
+    margin: 0; 
+    padding: 0; 
+    height: 100%;
+    box-sizing: border-box; 
+}
+
+
+body {
+    display: flex; 
+    flex-direction: column; 
+    min-height: 100vh; 
+}
+
+.govuk-header__service-name {
+    font-size: 30px; 
+}
+
+.govuk-button.govuk-button--start {
+    position: absolute; 
+    top: 5px; 
+    right: 10px; 
+    z-index: 100; 
+}
+
+#form {
+    margin-top: 30px; 
+}
+
+
+
+.govuk-footer {
+    width: 100%; 
+    padding: 20px 0; 
+    position: absolute; 
+    margin: 0; 
+    left: 0; 
+    box-sizing: border-box; 
+}
+
+

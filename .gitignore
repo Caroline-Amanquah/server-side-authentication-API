@@ -1,0 +1,8 @@
+# Node modules and build files
+node_modules/
+
+# Environment variables
+.env
+
+# Cookies and other sensitive data
+cookie.txt
