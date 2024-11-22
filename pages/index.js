@@ -1,4 +1,4 @@
-//client/dist/index.js
+//pages/index.js
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("form");
     const feedback = document.getElementById("feedback");
@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
             toggleButton.setAttribute("aria-label", isPassword ? "Hide password" : "Show password");
         });
     }
+    
   
     form.addEventListener("submit", async function (event) {
       event.preventDefault(); // Prevent default form submission

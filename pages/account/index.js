@@ -1,4 +1,4 @@
-//client/dist/account/index.js
+// pages/account/index.js
 document.addEventListener("DOMContentLoaded", async function () {
   try {
     // Fetch user data from the backend
@@ -19,6 +19,10 @@ document.addEventListener("DOMContentLoaded", async function () {
       if (data.name && data.referenceNumber) {
         document.getElementById("user-name").textContent = data.name;
         document.getElementById("reference-number").textContent = data.referenceNumber;
+
+        // Save data to local storage for potential use
+        localStorage.setItem("userName", data.name);
+        localStorage.setItem("referenceNumber", data.referenceNumber);
       } else {
         throw new Error("User data is missing in the response.");
       }
@@ -32,8 +36,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Redirect to login page if user is not authenticated
     window.location.href = "/";
   }
-});
 
+  // Populate fields from localStorage as fallback
   const userName = localStorage.getItem("userName");
   const referenceNumber = localStorage.getItem("referenceNumber");
 
@@ -43,14 +47,12 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     if (userNameElement) userNameElement.textContent = userName;
     if (referenceNumberElement) referenceNumberElement.textContent = referenceNumber;
-  } else {
-    window.location.href = "/";
   }
 
-
+  // Logout button functionality
   const logoutButton = document.getElementById("logout-button");
-  if (logoutButton) {
-    logoutButton.addEventListener("click", async function (event) {
+  if (logoutButton && !logoutButton.dataset.listenerAdded) {
+    logoutButton.addEventListener("click", async (event) => {
       event.preventDefault();
 
       try {
@@ -64,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         if (response.ok) {
           console.log("User logged out successfully");
-          window.location.href = "http://localhost:3000";
+          window.location.href = "/";
         } else {
           const data = await response.json();
           console.error("Logout failed:", data.message || "Unknown error");
@@ -73,6 +75,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.error("Error logging out:", error);
       }
     });
-  } else {
-    console.error("Logout button not found in the DOM.");
+
+    logoutButton.dataset.listenerAdded = "true"; // Prevent duplicate listeners
   }
+});

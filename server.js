@@ -1,11 +1,10 @@
-// server/server.js
+// server.js
 
 const Hapi = require('@hapi/hapi');
 const Cookie = require('@hapi/cookie');
 const dotenv = require('dotenv');
 const connectDB = require('./config/database');
 const userRoutes = require('./routes/userRoutes');
-const addStaticRoutes = require('../client/server');
 const Inert = require('@hapi/inert');
 const Path = require('path');
 
@@ -37,11 +36,51 @@ const init = async () => {
     redirectTo: false, // Do not redirect if authentication fails
   });
   
-  console.log('Available auth strategies:', server.auth.strategy);
-  console.log('Session strategy registered successfully.');
+  
 
-  // Register static routes
-  await addStaticRoutes(server);
+  server.route({
+    method: "GET",
+    path: "/assets/{param*}",
+    handler: {
+      directory: {
+        path: Path.join(__dirname, "public", "assets"),
+      },
+    },
+    options: {
+      auth: false, // Disable authentication for static files
+    },
+  });
+
+  // Serve files from the "public" directory with public access
+  server.route({
+    method: "GET",
+    path: "/public/{param*}",
+    handler: {
+      directory: {
+        path: Path.join(__dirname, "public"),
+      },
+    },
+    options: {
+      auth: false, // Disable authentication for static files
+    },
+  });
+
+  // Serve files from the "dist" directory with public access
+  server.route({
+    method: "GET",
+    path: "/{param*}",
+    handler: {
+      directory: {
+        path: Path.join(__dirname, "pages"),
+        index: ["index.html"],
+      },
+    },
+    options: {
+      auth: false, // Disable authentication for static files
+    },
+  });
+  
+  console.log("Static routes registered successfully.");
 
   // Register other user-defined API routes
   server.route(userRoutes);

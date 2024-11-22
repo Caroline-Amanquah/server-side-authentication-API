@@ -1,4 +1,4 @@
-// server/routes/userRoutes.js
+// routes/userRoutes.js
 
 const UserController = require('../controller/userController');
 const Joi = require('joi');
@@ -86,7 +86,7 @@ const userRoutes = [
 {
   method: 'GET',
   path: '/api/users/user',
-  handler: UserController.getCurrentUser, // Delegate logic to the controller
+  handler: UserController.getCurrentUser,
   options: {
     auth: false, // No need for additional Hapi auth;  auth-cookie validation is relied on
   },

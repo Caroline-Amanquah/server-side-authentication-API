@@ -1,8 +1,0 @@
-.govuk-header__link--homepage {
-    display: inline-block; /* Ensures that the hover underline aligns with the logo */
-    position: absolute;
-    transform: translateX(-400px); /* Moves both the logo and hover underline to the left */
-    text-decoration: underline; /* Keeps the underline directly below */
-    margin-top: 10px;
-    
-}
