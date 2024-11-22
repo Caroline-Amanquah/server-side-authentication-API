@@ -15,7 +15,6 @@ Replace [your MongoDB connection string] with the connection string for your Mon
 
 Replace [your cookie secret string] with a secure string for signing cookies.
 
-
 ### 2. Set Up and Run MongoDB
 
 After installing MongoDB on your desktop or laptop, configure it to run by starting the database using the following steps:
@@ -52,7 +51,7 @@ npm install --force
 node server.js
 ```
 
-Alternatively, you can use the npm script (if defined in package.json):
+Alternatively, you can use the npm script (defined in package.json):
 
 ```bash
 npm run start

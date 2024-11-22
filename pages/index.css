@@ -13,15 +13,6 @@ body {
     min-height: 100vh; 
 }
 
-.govuk-header__link--homepage {
-    display: inline-block; 
-    position: absolute;
-    transform: translateX(-400px); 
-    text-decoration: underline; 
-    margin-top: 10px;
-    
-}
-
 .govuk-header__service-name {
     font-size: 30px; 
 }
