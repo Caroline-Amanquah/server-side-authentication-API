@@ -1,4 +1,4 @@
-<h1 align="center"> GOV Authentication API Application</h1>
+<h1 align="center"> GOV Authentication Application</h1>
 
 <h2 align="center">Getting Started</h2>
 
